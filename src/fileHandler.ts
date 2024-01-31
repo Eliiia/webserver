@@ -30,7 +30,7 @@ export default function handler(req: Request, res: Response) {
     let path = req.path.substring(1)
     if (mime == Mime.Unknown) {
         mime = Mime.Html;
-        path = (path.endsWith("/")) 
+        path = req.path.endsWith("/")
             ? path + "index.html" 
             : path + ".html";
     }
