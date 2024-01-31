@@ -4,10 +4,11 @@ import { PORT } from "./config.js";
 
 const app = express()
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
-})
+// File handler
+import fileHandler from "./fileHandler.js"
+app.get('*', (req: Request, res: Response) => fileHandler(req, res))
 
+// Start app
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`)
+    console.log(`App listening on port ${PORT}`)
 })
