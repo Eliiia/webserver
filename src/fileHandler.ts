@@ -1,7 +1,7 @@
 import express, {Request, Response} from "express";
 import { existsSync, readFileSync } from "fs";
 
-import sendErr from "./error.js";
+import sendError from "./error.js";
 
 enum Mime {
     Html = "text/html",
@@ -39,7 +39,7 @@ export default function handler(req: Request, res: Response) {
 
     // Check for existence and send 404 if need be
     if (!existsSync(`./static/${path}`)) {
-        return sendErr(res, 404);
+        return sendError(res, 404);
     }
 
     console.log(`${req.ip} => ${req.path} => ${path}`)

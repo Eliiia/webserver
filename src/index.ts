@@ -1,11 +1,16 @@
 import express, {Request, Response} from "express"
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 
 import { PORT } from "./config.js";
+import { connectDb } from "./db.js";
 
 const app = express()
 
+connectDb();
+
 app.use(cookieParser())
+app.use(bodyParser.json());
 
 // User
 import { authorisation, whoami, login, register } from "./user.js";

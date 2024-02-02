@@ -14,5 +14,8 @@ function processVariable(name: String, v: String | undefined, type: Function, se
     return x
 }
 
+export const EPOCH = 1704067200;
+
 export const PORT = processVariable("Port", process.env.PORT, Number)
 export const SECRET_KEY = processVariable("Secret key", process.env.SECRET_KEY, String, true)
+export const MONGODB_URL = processVariable("MongoDB path", process.env.MONGODB_URL, String)
