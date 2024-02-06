@@ -23,7 +23,6 @@
             xhr.send(JSON.stringify(message));
 
             // Check for success
-            console.log(xhr.status)
             if (xhr.status == 200) messageBox.innerHTML = "Success!";
             else if (xhr.status == 403) messageBox.innerHTML = "Username or password was incorrect."
             else messageBox.innerHTML = `Error ${xhr.status}`;
@@ -33,7 +32,6 @@
 <body>
     <h1>login!!!</h1>
     <form>
-        <br> <!-- figure out how to remove lol -->
         <label for="username">username</label>
         <br>
         <input type="text" name="username" id="username_input">
@@ -44,6 +42,6 @@
         <br><br>
         <input type="button" value="submit" onclick="sendForm()">
     </form>
-    <p id="message">1234</p>
+    <p id="message"></p>
 </body>
 </html>

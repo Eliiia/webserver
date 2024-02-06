@@ -3,7 +3,6 @@ import { MONGODB_URL } from "./config.js";
 
 interface IUser {
     name: string;
-    id: string;
     pw_hash: string;
 }
 

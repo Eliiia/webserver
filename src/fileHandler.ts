@@ -1,4 +1,4 @@
-import express, {Request, Response} from "express";
+import {Request, Response} from "express";
 import { existsSync, readFileSync } from "fs";
 
 import sendError from "./error.js";
@@ -11,26 +11,23 @@ enum Mime {
 
 const translation: { [key: string]: Mime} = {
     html: Mime.Html,
-    css: Mime.Css
+    css: Mime.Css,
 }
 
 function getMime(s: String): Mime {
-    // Get last part
-    const s1 = s.split("/");
-    const s2 = s1[s1.length-1];
-    const s3 = s2.split(".");
-    const s4 = s3[s3.length-1];
+    // Get extension - split by slash, get last, split by dot, get last
+    const ext = s.split("/").pop()!.split(".").pop();
 
-    if (translation[s4] != undefined) return translation[s4]
-    else return Mime.Unknown
+    // If can't find a translation, return unknown
+    return translation[ext!] ? translation[ext!] : Mime.Unknown;
 }
 
 export default function handler(req: Request, res: Response) {
-    let mime = getMime(req.path)
+    let mime = getMime(req.path);
 
     // Add .html or index.html and remove first char
     let path = req.path.substring(1)
-    if (mime == Mime.Unknown) {
+    if (mime == Mime.Unknown) { // if no valid extension was found, assume missing .html
         mime = Mime.Html;
         path = req.path.endsWith("/")
             ? path + "index.html" 
@@ -47,5 +44,5 @@ export default function handler(req: Request, res: Response) {
     // Get file
     const file = readFileSync(`./static/${path}`)
 
-    res.status(200).setHeader("content-type", mime).send(file);
+    res.status(200).setHeader("Content-Type", mime).send(file);
 }
