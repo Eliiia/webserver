@@ -30,8 +30,6 @@ export async function whoami(req: Request, res: Response) {
     // Check for authentication process
     if (!req.user) return res.status(403).send({ msg: "NO CREDENTIALS" });
 
-    console.log(req.user)
-
     // Find user
     const user = await User.findOne({ _id: req.user });
     if (!user) throw Error // TODO: figure out a neat way to get rid of this
