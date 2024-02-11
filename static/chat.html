@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script>
+        function loadMessages(amount, removeOld) {
+            // Get data
+            const room = document.getElementById("room_input").value;
+
+            // Check data
+            if (!room) return;
+
+            // Send request
+            const message = { chatroom: room, amount: amount };
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", "/chat/get", false);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(message));
+
+            if (xhr.status != 200) return new Error("REQUEST FAILED: " + xhr.responseText);
+
+            // Parse response
+            const msgs = JSON.parse(xhr.responseText);
+            const messagesBox = document.getElementById("messages-box");
+
+            // Show messages on screen
+            msgs.forEach(msg => {
+                const timestamp = new Date(msg.timestamp);
+                messagesBox.innerHTML += `<div class="msg">
+                    <b>${msg.user}:</b> ${msg.text} <i>(${timestamp.toLocaleString()})</i>
+                    </div>`;
+            });
+        }
+
+        async function sendMessage() {
+            // Get data
+            const room = document.getElementById("room_input").value;
+            const messageInput = document.getElementById("message_input").value;
+
+            // Check data
+            if (!room || !messageInput) return;
+
+            // Send request 
+            const message = { chatroom: room, message: messageInput };
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/chat/send", false);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(message));
+
+            // Check for success
+            if (xhr.status != 200) return new Error("REQUEST FAILED: " + xhr.responseText);
+            
+            // Load message on screen
+            loadMessages(1, false); // 1 refers to only loading the last message
+        }
+    </script>
+</head>
+<body>
+    <h1>chat</h1>
+    <p>talk to other cool people!!!</p>
+
+    <form>
+        <label for="room">room name</label>
+        <br>
+        <input type="text" name="room" id="room_input">
+        <br><br>
+        <label for="message">message</label>
+        <br>
+        <input type="text" name="message" id="message_input">
+        <br><br>
+        <input type="button" value="send" onclick="sendMessage()">
+        <input type="button" value="load messages" onclick="loadMessages(10, true)">
+    </form>
+    <div id="messages-box">
+        
+    </div>
+</body>
+</html>

@@ -21,7 +21,7 @@ app.post("/user/register", (req: Request, res: Response) => register(req, res));
 
 // Chat
 import { getChatMessages, sendChatMessage } from "./chat.js";
-app.get("/chat/get", (req: Request, res: Response) => getChatMessages(req, res));
+app.put("/chat/get", (req: Request, res: Response) => getChatMessages(req, res)); // why can't this be a GET? 
 app.post("/chat/send", (req: Request, res: Response) => sendChatMessage(req, res));
 
 // File handler
