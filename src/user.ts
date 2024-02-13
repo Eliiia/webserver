@@ -28,7 +28,7 @@ export function authorisation(req: Request, res: Response, next: NextFunction) {
 
 export async function whoami(req: Request, res: Response) {
     // Check for authentication process
-    if (!req.user) return res.status(403).send({ msg: "NO CREDENTIALS" });
+    if (!req.user) return res.status(401).send({ msg: "NO CREDENTIALS" });
 
     // Send details
     res.status(200).send({ name: req.user, });
