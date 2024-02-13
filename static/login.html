@@ -12,7 +12,15 @@
             const password = document.getElementById("password_input").value;
             let messageBox = document.getElementById("message");
 
-            if (!name || !password) return messageBox.value = "Missing data";
+            if (!name || !password) return messageBox.innerHTML = "Missing data.";
+
+            if (password.length > 8) return messageBox.innerHTML = "Password too short.";
+            if (password == password.toUpperCase() ||
+                password == password.toLowerCase()) return messageBox.innerHTML = "Password must contain both uppercase and lowercase characters.";
+
+                
+            
+            console.log("hi")
 
             // Send request 
             const message = { name: name, password: password };
@@ -24,9 +32,9 @@
 
             // Check for success
             if (xhr.status == 200 && path == "/user/login") messageBox.innerHTML = "Success logging in!";
-            else if (xhr.status == 200 && path == "/user/register") messageBox.innerHTML = "Success registering! Now please log in."
-            else if (xhr.status == 403) messageBox.innerHTML = "Username or password was incorrect."
-            else messageBox.innerHTML = `Error ${xhr.status}`;
+            else if (xhr.status == 200 && path == "/user/register") messageBox.innerHTML = "Success registering! Now please log in.";
+            else if (xhr.status == 403) messageBox.innerHTML = "Username or password was incorrect.";
+            else messageBox.innerHTML = `Error ${xhr.status} - ${JSON.parse(xhr.responseText).msg}`;
         }
     </script>
 </head>
