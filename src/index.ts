@@ -12,9 +12,14 @@ connectDb();
 app.use(cookieParser())
 app.use(bodyParser.json());
 
-// User
-import { authorisation, whoami, login, register } from "./user.js";
+// Middleware
+import { authorisation } from "./user.js";
+import { logger } from "./log.js";
 app.use(authorisation)
+app.use(logger)
+
+// User
+import { whoami, login, register } from "./user.js";
 app.get("/user/whoami", (req: Request, res: Response) => whoami(req, res));
 app.post("/user/login", (req: Request, res: Response) => login(req, res));
 app.post("/user/register", (req: Request, res: Response) => register(req, res));
