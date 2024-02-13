@@ -64,7 +64,7 @@ export async function register(req: Request, res: Response) {
     if (await User.exists({ name: req.body.name })) return res.status(409).send({ msg: "DUPLICATE NAME" });
 
     // Check password security by checking length
-    if (req.body.password.length > 8) return res.status(400).send({ msg: "PASSWORD TOO SHORT" });
+    if (req.body.password.length < 8) return res.status(400).send({ msg: "PASSWORD TOO SHORT" });
     if (req.body.password == req.body.password.toUpperCase() ||
         req.body.password == req.body.password.toLowerCase()) return res.status(400).send({ msg: "PASSWORD MUST CONTAIN UPPERCASE AND LOWERCASE" })
 
