@@ -28,6 +28,7 @@
             const messagesBox = document.getElementById("messages-box");
 
             // Show messages on screen
+            if (removeOld) messagesBox.innerHTML = "";
             msgs.forEach(msg => {
                 const timestamp = new Date(msg.timestamp);
                 messagesBox.innerHTML += `<div class="msg">
