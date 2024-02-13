@@ -6,7 +6,7 @@
     <title>Login</title>
     <link rel="stylesheet" href="/styles.css">
     <script>
-        async function sendForm() {
+        async function sendForm(path) {
             // Check for correct input
             const name = document.getElementById("username_input").value;
             const password = document.getElementById("password_input").value;
@@ -18,12 +18,13 @@
             const message = { name: name, password: password };
 
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/user/login", false);
+            xhr.open("POST", path, false);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(message));
 
             // Check for success
-            if (xhr.status == 200) messageBox.innerHTML = "Success!";
+            if (xhr.status == 200 && path == "/user/login") messageBox.innerHTML = "Success logging in!";
+            else if (xhr.status == 200 && path == "/user/register") messageBox.innerHTML = "Success registering! Now please log in."
             else if (xhr.status == 403) messageBox.innerHTML = "Username or password was incorrect."
             else messageBox.innerHTML = `Error ${xhr.status}`;
         }
@@ -40,7 +41,8 @@
         <br>
         <input type="password" name="password" id="password_input">
         <br><br>
-        <input type="button" value="submit" onclick="sendForm()">
+        <input type="button" value="login" onclick="sendForm('/user/login')">
+        <input type="button" value="register" onclick="sendForm('/user/register')">
     </form>
     <p id="message"></p>
 </body>
