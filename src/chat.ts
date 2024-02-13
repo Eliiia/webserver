@@ -23,7 +23,7 @@ export async function getChatMessages(req: Request, res: Response) {
     let out: {user: string, text: string, timestamp: Date}[] = [];
 
     for (const message of roomMessages) {
-        const foundUser = await User.findOne({ _id: message.user });
+        const foundUser = await User.findOne({ name: message.user });
 
         out.push({
             user: foundUser!.name,

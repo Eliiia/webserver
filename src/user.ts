@@ -18,7 +18,7 @@ export function authorisation(req: Request, res: Response, next: NextFunction) {
 
     // Get user ID
     try {
-        req.user = (jwt.verify(req.cookies.access_token, SECRET_KEY) as JwtPayload).userid;
+        req.user = (jwt.verify(req.cookies.access_token, SECRET_KEY) as JwtPayload).user;
     } catch (error: any) {
         return res.status(403).send({ msg: "INVALID TOKEN" }) 
     }
@@ -30,12 +30,8 @@ export async function whoami(req: Request, res: Response) {
     // Check for authentication process
     if (!req.user) return res.status(403).send({ msg: "NO CREDENTIALS" });
 
-    // Find user
-    const user = await User.findOne({ _id: req.user });
-    if (!user) throw Error // TODO: figure out a neat way to get rid of this
-
     // Send details
-    res.status(200).send({ name: user.name, });
+    res.status(200).send({ name: req.user, });
 }
 
 export async function login(req: Request, res: Response) {    
@@ -48,7 +44,7 @@ export async function login(req: Request, res: Response) {
     if (!bcrypt.compareSync(req.body.password, user.pw_hash)) return res.status(403).send({ msg: "INVALID CREDENTIALS" });
 
     // Generate token
-    const token = jwt.sign({ userid: user.id }, SECRET_KEY);
+    const token = jwt.sign({ user: user.name }, SECRET_KEY);
 
     // Respond with cookie
     return res
