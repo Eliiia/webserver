@@ -21,15 +21,18 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(message));
 
-            if (xhr.status != 200) return new Error("REQUEST FAILED: " + xhr.responseText);
-
             // Parse response
-            const msgs = JSON.parse(xhr.responseText);
+            const parsed = JSON.parse(xhr.responseText);
+
             const messagesBox = document.getElementById("messages-box");
+
+            // Error handling
+            if (xhr.status == 403 && parsed.msg == "MISSING PERMISSION") return messagesBox.innerHTML = "You do not have permissions to view this channel.";
+            if (xhr.status != 200) return messagesBox.innerHTML = "FAILED: " + parsed.msg;
 
             // Show messages on screen
             if (removeOld) messagesBox.innerHTML = "";
-            msgs.forEach(msg => {
+            parsed.forEach(msg => {
                 const timestamp = new Date(msg.timestamp);
                 messagesBox.innerHTML += `<div class="msg">
                     <b>${msg.user}:</b> ${msg.text} <i>(${timestamp.toLocaleString()})</i>
@@ -53,8 +56,12 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(message));
 
-            // Check for success
-            if (xhr.status != 200) return new Error("REQUEST FAILED: " + xhr.responseText);
+            // Error handling
+            const parsed = (xhr.responseText == "") ? {} : JSON.parse(xhr.responseText);
+            const messagesBox = document.getElementById("messages-box");
+
+            if (xhr.status == 403 && parsed.msg == "MISSING PERMISSION") return messagesBox.innerHTML = "You do not have permissions to send to this channel.";
+            if (xhr.status != 200) return messagesBox.innerHTML = "FAILED: " + parsed.msg;
             
             // Load message on screen
             loadMessages(1, false); // 1 refers to only loading the last message
