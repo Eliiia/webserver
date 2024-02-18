@@ -58,6 +58,7 @@ export async function login(req: Request, res: Response) {
     return res
         .cookie("access_token", token, {
             httpOnly: true,
+            sameSite: true,
             secure: process.env.NODE_ENV === "production"
         })
         .status(200)

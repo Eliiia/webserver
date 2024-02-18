@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run_dev": "set NODE_ENV=production&& npx nodemon --exec ts-node --esm .",
-    "run_devc": "set NODE_ENV=production&& npx tsc&& node ./target/index.js"
+    "run_dev": "set NODE_ENV=test&& npx nodemon --exec ts-node --esm .",
+    "run_devc": "set NODE_ENV=test&& npx tsc&& node ./target/index.js"
   },
   "repository": {
     "type": "git",
