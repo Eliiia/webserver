@@ -6,14 +6,23 @@ export async function connectDb() {
     console.log(`[DB] Connected to MongoDB database at ${MONGODB_URL}`);
 }
 
+export enum permLevel {
+    Admin = 0,
+    VeryTrusted, // 1
+    Trusted, // 2
+    Untrusted, // 3
+}
+
 interface IUser {
     name: string;
     pw_hash: string;
+    permission: permLevel;
 }
 
 const userSchema = new Schema<IUser>({
     name: { type: String, required: true, unique: true },
     pw_hash: { type: String, required: true },
+    permission: { type: Number, required: true },
 });
 
 export const User = model<IUser>("User", userSchema);

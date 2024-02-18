@@ -44,7 +44,7 @@ export async function sendChatMessage(req: Request, res: Response) {
 
     // Formulate new message
     const newMessage: IMessage = {
-        user: req.user as string,
+        user: req.user.name as string,
         text: req.body.message,
         timestamp: new Date(),
     }

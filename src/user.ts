@@ -5,11 +5,11 @@ import bcrypt from "bcrypt"
 import { EPOCH, SECRET_KEY } from "./config.js";
 import sendError from "./error.js";
 
-import { User } from "./db.js";
+import { User, permLevel } from "./db.js";
 
 const saltRounds = (process.env.NODE_ENV == "PRODUCTION") ? 2 : 8;
 
-export function authorisation(req: Request, res: Response, next: NextFunction) {
+export async function authorisation(req: Request, res: Response, next: NextFunction) {
     // Check for missing cookie
     if (!req.cookies.access_token) {
         req.user = undefined;
@@ -18,9 +18,17 @@ export function authorisation(req: Request, res: Response, next: NextFunction) {
 
     // Get user ID
     try {
-        req.user = (jwt.verify(req.cookies.access_token, SECRET_KEY) as JwtPayload).user;
+        // Get username from jwt
+        const jwtUsername = (jwt.verify(req.cookies.access_token, SECRET_KEY) as JwtPayload).name;
+
+        // Try to find in database
+        const user = await User.findOne({ name: jwtUsername });
+        if (!user) return res.status(403).send({ msg: "USER NOT FOUND" });
+
+        // Set user
+        req.user = { name: jwtUsername, permission: user.permission };
     } catch (error: any) {
-        return res.status(403).send({ msg: "INVALID TOKEN" }) 
+        return res.status(403).send({ msg: "INVALID TOKEN" });
     }
 
     next();
@@ -31,7 +39,7 @@ export async function whoami(req: Request, res: Response) {
     if (!req.user) return res.status(401).send({ msg: "NO CREDENTIALS" });
 
     // Send details
-    res.status(200).send({ name: req.user, });
+    res.status(200).send({ name: req.user.name, });
 }
 
 export async function login(req: Request, res: Response) {    
@@ -44,7 +52,7 @@ export async function login(req: Request, res: Response) {
     if (!bcrypt.compareSync(req.body.password, user.pw_hash)) return res.status(403).send({ msg: "INVALID CREDENTIALS" });
 
     // Generate token
-    const token = jwt.sign({ user: user.name }, SECRET_KEY);
+    const token = jwt.sign({ name: user.name }, SECRET_KEY);
 
     // Respond with cookie
     return res
@@ -82,6 +90,7 @@ export async function register(req: Request, res: Response) {
     const u = new User({
         name: req.body.name,
         pw_hash: hash,
+        permission: permLevel.Untrusted,
     });
 
     try {
