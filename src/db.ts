@@ -36,6 +36,7 @@ export interface IMessage {
 interface IChatroom {
     name: string,
     messages: IMessage,
+    requiredPermission: number,
 }
 
 const chatroomSchema = new Schema<IChatroom>({
@@ -49,6 +50,7 @@ const chatroomSchema = new Schema<IChatroom>({
         text: { type: String, required: true },
         timestamp: { type: Date, required: true },
     }],
+    requiredPermission: { type: Number, required: true },
 });
 
 export const Chatroom = model<IChatroom>("Chatroom", chatroomSchema);

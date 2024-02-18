@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Chatroom, IMessage, User } from "./db.js";
+import { Chatroom, IMessage, User, permLevel } from "./db.js";
 
 export async function getChatMessages(req: Request, res: Response) {
     if (!req.user) return res.status(403).send({ msg: "NO CREDENTIALS" });
@@ -14,6 +14,9 @@ export async function getChatMessages(req: Request, res: Response) {
     // Find chatroom
     const room = await Chatroom.findOne({name: req.body.chatroom});
     if (!room) return res.status(404).send({ msg: "CHATROOM NOT FOUND" });
+
+    // Check permission level
+    if (req.user.permission > room.requiredPermission) return res.status(403).send({ msg: "MISSING PERMISSION" });
 
     // Get last 5 messages
     let roomMessages = (room.messages as unknown as Array<IMessage>)
@@ -50,22 +53,27 @@ export async function sendChatMessage(req: Request, res: Response) {
     }
 
     // Try to find room and update it if can
-    const room = await Chatroom.updateOne({name: req.body.chatroom}, {$push: {messages: newMessage}});
+    const room = await Chatroom.findOne({name: req.body.chatroom});
 
     // If no room found, create new room with the message and send it
-    if (room.matchedCount == 0) {
+    if (!room) {
         const newRoom = new Chatroom({
             name: req.body.chatroom,
             messages: [
                 newMessage
-            ]
+            ],
+            requiredPermission: permLevel.Untrusted,
         });
 
         await newRoom.save();
 
         res.status(200).send({ msg: "CHATROOM CREATED" });
     }
+    // Otherwise do permission check and send
     else {
+        if (req.user.permission > room.requiredPermission) return res.status(403).send({ msg: "MISSING PERMISSION" });
+
+        await room.updateOne({$push: {messages: newMessage}});
         res.status(200).send();
     }
 }
