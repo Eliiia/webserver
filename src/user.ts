@@ -39,7 +39,7 @@ export async function whoami(req: Request, res: Response) {
     if (!req.user) return res.status(401).send({ msg: "NO CREDENTIALS" });
 
     // Send details
-    res.status(200).send({ name: req.user.name, });
+    res.status(200).send({ name: req.user.name, permissionLevel: req.user.permission });
 }
 
 export async function login(req: Request, res: Response) {    
