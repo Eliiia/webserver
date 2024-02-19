@@ -5,8 +5,9 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "run_dev": "set NODE_ENV=test&& npx tsx .",
-    "run_devc": "set NODE_ENV=test&& npx tsc&& node ./target/index.js"
+    "run": "set NODE_ENV=test&& npx tsx .",
+    "runc": "set NODE_ENV=test&& npx tsc&& node ./target/index.js",
+    "rundev": "set NODE_ENV=test&& npx tsx watch --ignore ./static/ ."
   },
   "repository": {
     "type": "git",
