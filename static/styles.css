@@ -1,21 +1,22 @@
 body {
-    background-color: #303638;
+    background-color: #393d3e;
     color: #FAF8F0;
     font-family: Arial, Helvetica, sans-serif
 }
 
-@media screen and (orientation: portrait) {
-    .content {
-        width: 90%;
-    }
-}
 body {
     width: 30%;
     margin: auto;
 }
 
+@media screen and (orientation: portrait) {
+    body {
+        width: 90%;
+    }
+}
+
 a {
-    color: #789686
+    color: #a8a4a1;
 }
 
 /*
