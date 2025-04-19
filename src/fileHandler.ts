@@ -39,8 +39,6 @@ export default function handler(req: Request, res: Response) {
         return sendError(res, 404);
     }
 
-    console.log(`${req.ip} => ${req.path} => ${path}`)
-
     // Get file
     const file = readFileSync(`./static/${path}`)
 
